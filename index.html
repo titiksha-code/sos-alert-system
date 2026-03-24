@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SOS Monitor — Emergency Tracking</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🛡</div>
+      <div>
+        <div class="logo-text">SOS Monitor</div>
+        <span class="logo-sub">Emergency Tracking System</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+      <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="Refresh data">
+        <svg id="refresh-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Refresh
+      </button>
+      <div id="clock">--:--:--</div>
+    </div>
+  </header>
+
+  <!-- ── Summary cards ── -->
+  <div class="summary">
+    <div class="stat-card">
+      <div class="stat-label">Total Users</div>
+      <div class="stat-value" id="count-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Safe</div>
+      <div class="stat-value safe" id="count-safe">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Accidents</div>
+      <div class="stat-value danger" id="count-accident">0</div>
+    </div>
+  </div>
+
+  <!-- ── Search & filter controls ── -->
+  <div class="controls">
+    <input class="search-box" id="search" type="text" placeholder="Search phone number or name..."/>
+    <button class="filter-btn active" id="filter-all"      onclick="setFilter('all')">All</button>
+    <button class="filter-btn"        id="filter-safe"     onclick="setFilter('safe')">Safe</button>
+    <button class="filter-btn danger-filter" id="filter-accident" onclick="setFilter('accident')">Accident</button>
+  </div>
+
+  <!-- ── User table ── -->
+  <div class="table-wrap">
+    <div class="table-head">
+      <div class="th">#</div>
+      <div class="th">Phone Number</div>
+      <div class="th">Status</div>
+      <div class="th">Last Updated</div>
+      <div class="th">Action</div>
+    </div>
+    <div id="table-body"></div>
+  </div>
+
+  <!-- ── Demo / API test panel ── -->
+  <div class="demo-panel">
+    <span class="demo-label">⚙ Demo / API Test</span>
+    <input class="demo-phone-input" id="demo-phone" type="text" placeholder="+91 98765 43210"/>
+    <button class="demo-btn btn-safe"     onclick="demoAdd('SAFE')">Add Safe</button>
+    <button class="demo-btn btn-accident" onclick="demoAdd('ACCIDENT')">Trigger SOS</button>
+    <button class="demo-btn btn-remove"   onclick="demoRemove()">Remove</button>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-text">SOS Monitor v1.0 — Replace demo data with your hardware API endpoint</div>
+    <div class="footer-text" id="last-refresh">Last refresh: —</div>
+  </footer>
+
+</div><!-- /.wrap -->
+
+<!-- ── Detail modal ── -->
+<div class="modal-bg" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="modal-title" id="m-name">User</div>
+    <div class="modal-phone" id="m-phone">+91 —</div>
+    <div class="modal-grid">
+      <div class="modal-item">
+        <div class="modal-item-label">Status</div>
+        <div class="modal-item-value" id="m-status">—</div>
+      </div>
+      <div class="modal-item">
+        <div class="modal-item-label">Last Updated</div>
+        <div class="modal-item-value" id="m-time">—</div>
+      </div>
+      <div class="modal-item">
+        <div class="modal-item-label">Device ID</div>
+        <div class="modal-item-value" id="m-device">—</div>
+      </div>
+      <div class="modal-item">
+        <div class="modal-item-label">Signal Strength</div>
+        <div class="modal-item-value" id="m-signal">—</div>
+      </div>
+    </div>
+    <div class="modal-code">
+      // To connect hardware: POST to /api/update<br>
+      // Body: { phone, status, deviceId, signal }<br>
+      // Status values: "SAFE" | "ACCIDENT"
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast notification ── -->
+<div class="toast" id="toast"></div>
+
+<!-- JavaScript -->
+<script src="app.js"></script>
+
+</body>
+</html>
